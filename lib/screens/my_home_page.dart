@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/color_slider_widget.dart';
+import '../widgets/custom_action_button.dart';
+import '../widgets/custom_color_slider.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -29,68 +30,39 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Icon App'),
+        actionsIconTheme:
+            IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+        title: Text(
+          'My Icon',
+          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         leading: Builder(
           builder: (context) => IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.menu),
+            color: Theme.of(context).colorScheme.onPrimary,
             onPressed: () {
               Scaffold.of(context).openDrawer();
             },
           ),
         ),
         actions: [
-          if (allowResize)
-            IconButton(
-              icon: Icon(Icons.remove),
-              onPressed: () {
-                setState(() {
-                  iconSize -= 50.0;
-                });
-              },
-            ),
-          if (allowResize)
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  iconSize = 100.0;
-                });
-              },
-              child: Text('S'),
-            ),
-          if (allowResize)
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  iconSize = 300.0;
-                });
-              },
-              child: Text('M'),
-            ),
-          if (allowResize)
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  iconSize = 500.0;
-                });
-              },
-              child: Text('L'),
-            ),
-          if (allowResize)
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                setState(() {
-                  iconSize += 50.0;
-                });
-              },
-            ),
+          CustomActionButton(
+            allowResize: allowResize,
+            iconSize: iconSize,
+            onPressed: (double size) {
+              setState(() {
+                iconSize = size;
+              });
+            },
+          )
         ],
       ),
       drawer: Drawer(
         child: ListView(
           children: [
             CheckboxListTile(
-              title: Text('Allow Resize'),
+              title: const Text('Allow Resize'),
               value: allowResize,
               onChanged: (value) {
                 setState(() {
@@ -99,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             CheckboxListTile(
-              title: Text('Allow Change Primer Color'),
+              title: const Text('Allow Change Primer Color'),
               value: allowChangePrimerColor,
               onChanged: (value) {
                 setState(() {
@@ -110,23 +82,24 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      body: Center(
-        child: Icon(Icons.star,
-            size: iconSize,
-            color: allowChangePrimerColor
-                ? Theme.of(context).colorScheme.primary
-                : iconColor),
-      ),
-      bottomNavigationBar: ColorSliderWidget(
-        allowChangePrimerColor: allowChangePrimerColor,
-        onColorChanged: (double red, double green, double blue) {
-          setState(() {
-            redValue = red;
-            greenValue = green;
-            blueValue = blue;
-          });
-        },
-      ),
+      body: Stack(children: [
+        Center(
+          child: Icon(Icons.star, size: iconSize, color: iconColor),
+        ),
+        Positioned.fill(
+          bottom: 0,
+          child: CustomColorSlider(
+            allowChangePrimaryColor: allowChangePrimerColor,
+            onColorChanged: (double red, double green, double blue) {
+              setState(() {
+                redValue = red;
+                greenValue = green;
+                blueValue = blue;
+              });
+            },
+          ),
+        ),
+      ]),
     );
   }
 }

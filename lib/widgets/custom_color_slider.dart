@@ -76,22 +76,36 @@ class _CustomColorSliderState extends State<CustomColorSlider> {
   }
 
   void updateColor(double oldValue, double newValue, Color color) {
-    switch (color) {
-      case Colors.red:
-        redValue = newValue;
-        greenValue = 0;
-        blueValue = 0;
-        break;
-      case Colors.green:
-        redValue = 0;
-        greenValue = newValue;
-        blueValue = 0;
-        break;
-      case Colors.blue:
-        redValue = 0;
-        greenValue = 0;
-        blueValue = newValue;
-        break;
+    if (widget.allowChangePrimaryColor) {
+      switch (color) {
+        case Colors.red:
+          redValue = newValue;
+          greenValue = 0;
+          blueValue = 0;
+          break;
+        case Colors.green:
+          redValue = 0;
+          greenValue = newValue;
+          blueValue = 0;
+          break;
+        case Colors.blue:
+          redValue = 0;
+          greenValue = 0;
+          blueValue = newValue;
+          break;
+      }
+    } else {
+      switch (color) {
+        case Colors.red:
+          redValue = newValue;
+          break;
+        case Colors.green:
+          greenValue = newValue;
+          break;
+        case Colors.blue:
+          blueValue = newValue;
+          break;
+      }
     }
   }
 }
